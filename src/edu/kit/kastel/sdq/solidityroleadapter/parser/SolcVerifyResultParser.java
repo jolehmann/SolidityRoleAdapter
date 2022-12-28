@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-import edu.kit.kastel.sdq.solidityroleadapter.IllegalModification;
+
+import edu.kit.kastel.sdq.solidityroleadapter.items.IllegalModification;
 
 public class SolcVerifyResultParser {
 

@@ -1,4 +1,4 @@
-package edu.kit.kastel.sdq.solidityroleadapter;
+package edu.kit.kastel.sdq.solidityroleadapter.items;
 
 import java.util.HashSet;
 import java.util.Set;

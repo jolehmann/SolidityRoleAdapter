@@ -8,12 +8,14 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import edu.kit.kastel.sdq.solidityroleadapter.Function;
-import edu.kit.kastel.sdq.solidityroleadapter.Variable;
+import edu.kit.kastel.sdq.solidityroleadapter.items.Function;
+import edu.kit.kastel.sdq.solidityroleadapter.items.Role;
+import edu.kit.kastel.sdq.solidityroleadapter.items.Roles;
+import edu.kit.kastel.sdq.solidityroleadapter.items.Variable;
 
 public class RoleAnnotationParser {
 	
-	private static final String REGEX_ROLE_ANNOTATIONS = "(?<name>[^\\s]+) (?<roles1>\\{[^\\}]*\\})(, (?<roles2>\\{[^\\}]*\\}))*";
+	private static final String REGEX_ROLE_ANNOTATIONS = "(?<name>[^\\s]+) (\\{(?<roles1>[^\\}]*)\\})(, (\\{(?<roles2>[^\\}]*)\\}))*";
 	private static final String NAME_GROUP = "name", FIRST_ROLES_GROUP = "roles1", SECOND_ROLES_GROUP = "roles2";
 
 	HashMap<String, Function> functions;
@@ -39,13 +41,22 @@ public class RoleAnnotationParser {
 			Matcher matcher = pattern.matcher(line);
 			if (matcher.matches()) {
 				if (matcher.group(SECOND_ROLES_GROUP) == null) {
-					functions.put(matcher.group(NAME_GROUP), new Function(matcher.group(NAME_GROUP), matcher.group(FIRST_ROLES_GROUP)));
+					String name = matcher.group(NAME_GROUP).replaceFirst("[^:]+::", "");
+					functions.put(matcher.group(NAME_GROUP), new Function(name, parseRoles(matcher.group(FIRST_ROLES_GROUP))));
 				} else {
 					String name = matcher.group(NAME_GROUP).replaceFirst("[^:]+::", "");
-					variables.put(name, new Variable(name, matcher.group(FIRST_ROLES_GROUP), matcher.group(SECOND_ROLES_GROUP)));
+					variables.put(matcher.group(NAME_GROUP), new Variable(name, parseRoles(matcher.group(FIRST_ROLES_GROUP)), parseRoles(matcher.group(SECOND_ROLES_GROUP))));
 				}
 			}
 		}
+	}
+	
+	private Roles parseRoles(String rolesInBrackets) {
+		Roles roles = new Roles();
+		for (String name : rolesInBrackets.split(", ")) {
+			roles.add(new Role(name));
+		}
+		return roles;
 	}
 	
 	public void printParsedDataInfo() {
@@ -66,11 +77,22 @@ public class RoleAnnotationParser {
 	/**
 	 * Returns the Function with annotated roles
 	 * 
-	 * @param context The name of the class of the function
-	 * @param name
-	 * @return
+	 * @param context The name of the surrounding class of the function
+	 * @param name The name of the function
+	 * @return The function object
 	 */
 	public Function getFunction (String context, String name) {
+		return null;
+	}
+	
+	/**
+	 * Returns the Variable with annotated roles
+	 * 
+	 * @param context The name of the surrounding class of the variable
+	 * @param name The name of the variable
+	 * @return The variable object
+	 */
+	public Variable getVariable (String context, String name) {
 		return null;
 	}
 }
