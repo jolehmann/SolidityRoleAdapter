@@ -18,7 +18,7 @@ Market::settlementPhaseActive {MANAGER}, {}
 Market::designatedReporterReported {DESIGNATED_REPORTER}, {}
 Market::setReporter {MARKET_CREATOR}
 Market::setBonds {MARKET_CREATOR}
-Market::buyShares {}
+Market::buyShares {MARKET_CREATOR, DESIGNATED_REPORTER, OPEN_REPORTER, SHAREHOLDER, MANAGER}
 Market::sellShares {SHAREHOLDER}
 Market::claimReporterRole {SHAREHOLDER}
 Market::designatedReport {DESIGNATED_REPORTER}
@@ -31,4 +31,4 @@ Market::closeDisputingWindow {MANAGER}
 Market::sentCreationBond {MANAGER}
 MarketManagement::marketCounter {}, {}
 MarketManagement::markets {}, {}
-MarketManagement::createNewMarket {}
+MarketManagement::createNewMarket {MARKET_CREATOR, DESIGNATED_REPORTER, OPEN_REPORTER, SHAREHOLDER, MANAGER}
