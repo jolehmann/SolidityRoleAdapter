@@ -1,0 +1,3 @@
+R = (allowOpenReport(), {MANAGER}) (openReporter, mod{SHAREHOLDER}, infl{}) => PostProcessing(R) ==> (openReporter, mod{SHAREHOLDER, MANAGER}, infl{MANAGER})
+// No Roles were annotated to 'balances', illegally modified by closeDisputingWindow() {MANAGER}
+R = (closeDisputingWindow(), {MANAGER}) (reportedOutcome, mod{OPEN_REPORTER, DESIGNATED_REPORTER}, infl{}) => PostProcessing(R) ==> (reportedOutcome, mod{OPEN_REPORTER, DESIGNATED_REPORTER, MANAGER}, infl{MANAGER})

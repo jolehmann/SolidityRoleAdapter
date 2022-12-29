@@ -16,6 +16,33 @@ public class Roles {
 		return this;
 	}
 	
+	public Roles add(Set<Role> roles) {
+		this.roles.addAll(roles);
+		return this;
+	}
+	
+	/**
+	 * Returns a Set of all contained Role objects.
+	 * @return
+	 */
+	public Set<Role> toSet() {
+		Set<Role> rolesCopy = new HashSet<Role>();
+		rolesCopy.addAll(this.roles);
+		return rolesCopy;
+	}
+	
+	/**
+	 * Returns a new Roles object with the union of both roles
+	 * @param otherRoles
+	 * @return
+	 */
+	public Roles copyAndAdd(Roles otherRoles) {
+		Roles copy = new Roles();
+		copy.add(this.toSet());
+		copy.add(otherRoles.toSet());
+		return copy;
+	}
+	
 	public boolean contains(Role role) {
 		return roles.contains(role);
 	}

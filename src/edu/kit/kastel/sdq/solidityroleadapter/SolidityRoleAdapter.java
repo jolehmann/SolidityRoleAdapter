@@ -7,6 +7,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+
+import edu.kit.kastel.sdq.solidityroleadapter.items.IllegalModification;
 import edu.kit.kastel.sdq.solidityroleadapter.parser.RoleAnnotationParser;
 import edu.kit.kastel.sdq.solidityroleadapter.parser.SolcVerifyResultParser;
 
@@ -14,7 +16,7 @@ public class SolidityRoleAdapter {
 	private static final String URI_SOLC_VERIFY = "data/SolcVerifyResults.txt";
 	private static final String URI_ROLE_ANNOTATIONS = "data/RoleAnnotations.txt";
 
-	private static final String URI_NEW_VERSION_OF_RESULT_FILE = "data/SolcVerifyResultsWithRoleAnnotations.txt";
+	private static final String URI_NEW_VERSION_OF_RESULT_FILE = "data/SolidityRoleAdapter - Results.txt";
 	
 	private static final boolean PRINT_CONSOLE_INFO = true;
 
@@ -23,25 +25,43 @@ public class SolidityRoleAdapter {
 		RoleAnnotationParser roleAP = new RoleAnnotationParser();
 		SolcVerifyResultParser solcVRP = new SolcVerifyResultParser();
 		
+		RoleAnnotations roleAnnotations = new RoleAnnotations();
+		List<IllegalModification> illegalModifications = new ArrayList<IllegalModification>();
+		
 		try {
 			if (PRINT_CONSOLE_INFO) printReadFilesInfo();
 			
-			roleAP.parse(URI_ROLE_ANNOTATIONS);
-			solcVRP.parse(URI_SOLC_VERIFY);
+			roleAP.parse(URI_ROLE_ANNOTATIONS, roleAnnotations);
+			solcVRP.parse(URI_SOLC_VERIFY, illegalModifications);
 			
-			if (PRINT_CONSOLE_INFO) roleAP.printParsedDataInfo();
+			if (PRINT_CONSOLE_INFO) roleAnnotations.printDataInfo();
+			if (PRINT_CONSOLE_INFO) {
+				System.out.println("-----Parsed Illegal Modifications-----");
+				for(IllegalModification i : illegalModifications) {
+					System.out.println(i.toString());
+				}
+				System.out.println("");
+			}
 			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		//TODO Create result
-		List <String> linesOfSolcVerifyResult = new ArrayList<String>();
+		// Annotate all roles to the parsed illegalModifications
+		for(IllegalModification i : illegalModifications) {
+			i.annotateWith(roleAnnotations);
+		}
+		
+		// Create result
+		List <String> linesOfResult = new ArrayList<String>();
+		for(IllegalModification i : illegalModifications) {
+			linesOfResult.add(i.toBracketNotation());
+		}
 		
 		try {
-			if (PRINT_CONSOLE_INFO) printWriteFileInfo(linesOfSolcVerifyResult);
+			if (PRINT_CONSOLE_INFO) printWriteFileInfo(linesOfResult);
 			
-			writeBackToResultFile(linesOfSolcVerifyResult);
+			writeBackToResultFile(linesOfResult);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -63,9 +83,10 @@ public class SolidityRoleAdapter {
 		System.out.println("");
 	}
 	
-	static void printWriteFileInfo(List <String> linesOfSolcVerifyResult) {
+	static void printWriteFileInfo(List <String> linesOfResult) {
 		System.out.println("-----Generated Output-----");
-		System.out.println(String.join(System.lineSeparator(), linesOfSolcVerifyResult));
+		System.out.println(String.join(System.lineSeparator(), linesOfResult));
+		System.out.println("");
 	}
 	
 	static void printTerminatedInfo() {
