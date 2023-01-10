@@ -14,6 +14,7 @@ import edu.kit.kastel.sdq.solidityroleadapter.parser.SolcVerifyResultParser;
 
 public class SolidityRoleAdapter {
 	private static final String URI_SOLC_VERIFY = "data/SolcVerifyResults.txt";
+	private static final String URI_SLITHER = "data/SlitherResults - Market.txt";
 	private static final String URI_ROLE_ANNOTATIONS = "data/RoleAnnotations.txt";
 
 	private static final String URI_NEW_VERSION_OF_RESULT_FILE = "data/SolidityRoleAdapter - Results.txt";

@@ -45,12 +45,12 @@ public class SolcVerifyResultParser {
 
 				for (int j = i + 1; j < linesOfSolcVerifyResultFile.size(); j++) {
 					Pattern modIlligallyPattern = Pattern.compile(REGEX_MOD_ILLEGALLY);
-					Matcher mocIllegallyMatcher = modIlligallyPattern.matcher(linesOfSolcVerifyResultFile.get(j));
+					Matcher modIllegallyMatcher = modIlligallyPattern.matcher(linesOfSolcVerifyResultFile.get(j));
 
-					if (!mocIllegallyMatcher.matches() || mocIllegallyMatcher.group(ILLEGALLY_GROUP) == null) {
+					if (!modIllegallyMatcher.matches() || modIllegallyMatcher.group(ILLEGALLY_GROUP) == null) {
 						break;
 					}
-					String variableName = mocIllegallyMatcher.group(NAME_GROUP);
+					String variableName = modIllegallyMatcher.group(NAME_GROUP);
 					illegalModifications.add(new IllegalModification(context, functionName, variableName));
 				}
 			}
