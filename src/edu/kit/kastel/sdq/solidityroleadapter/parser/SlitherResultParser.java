@@ -10,18 +10,21 @@ import java.util.regex.Pattern;
 import edu.kit.kastel.sdq.solidityroleadapter.items.InfluencerRelation;
 
 public class SlitherResultParser {
-	private static final String REGEX_ERROR_FOUND = "(?<context>[^:]+)::(?<name>[^:]+):(.)*(?<error>ERROR)";
-	private static final String REGEX_MOD_ILLEGALLY = "(.)*?(?<name>[^(\\s | ')]+)('){0,1} (?<illegally>illegally)";
-	private static final String CONTEXT_GROUP = "context", NAME_GROUP = "name", ERROR_GROUP = "error",
-			ILLEGALLY_GROUP = "illegally";
+	private static final String REGEX_FIRST_LINE_CONTEXT = "Contract (?<context>.+)";
+	private static final String REGEX_VARIABLE_INFLUENCERS_LINE = "\\|([\\s]+)(?<name>[^\\s]+)([\\s]+)\\|([\\s]+)\\[(?<influencers>[^\\]]*)\\]([\\s]+)\\|";
+	private static final String CONTEXT_GROUP = "context", NAME_GROUP = "name", INFLUENCERS_GROUP = "influencers";
+	private static final String REGEX_PIPE = "|", REGEX_WHITESPACE_OR_QUOTATION_MARK = "[\\s']", REGEX_COMMA = ",";
 
 	public SlitherResultParser() {
 	}
 
 	/**
-	 * Reads the file with the provided uri and adds all found influencerRelations into the InfluencerRelation List.
-	 * @param uri the path to the RoleAnnotations.txt file
-	 * @param influencerRelations An InfluencerRelation List, to which the data should be added
+	 * Reads the file with the provided uri and adds all found influencerRelations
+	 * into the InfluencerRelation List.
+	 * 
+	 * @param uri                 the path to the RoleAnnotations.txt file
+	 * @param influencerRelations An InfluencerRelation List, to which the data
+	 *                            should be added
 	 * @throws IOException if the path is not accessible
 	 */
 	public void parse(final String uri, List<InfluencerRelation> influencerRelations) throws IOException {
@@ -34,10 +37,36 @@ public class SlitherResultParser {
 
 	private void parseLines(List<String> linesOfSolcVerifyResultFile, List<InfluencerRelation> influencerRelations) {
 
-		for (int i = 0; i < linesOfSolcVerifyResultFile.size(); i++) {
-			Pattern pattern = Pattern.compile(REGEX_ERROR_FOUND);
+		String context = this.getContext(linesOfSolcVerifyResultFile.get(0));
+
+		for (int i = 4; i < linesOfSolcVerifyResultFile.size(); i++) {
+			if (!linesOfSolcVerifyResultFile.get(i).startsWith(REGEX_PIPE))
+				break;
+
+			Pattern pattern = Pattern.compile(REGEX_VARIABLE_INFLUENCERS_LINE);
 			Matcher matcher = pattern.matcher(linesOfSolcVerifyResultFile.get(i));
-			
+
+			if (matcher.matches() && matcher.group(INFLUENCERS_GROUP) != null
+					&& matcher.group(INFLUENCERS_GROUP) != "") {
+				String targetVariableName = matcher.group(NAME_GROUP);
+				String allInfluencers = matcher.group(INFLUENCERS_GROUP);
+				allInfluencers = allInfluencers.replaceAll(REGEX_WHITESPACE_OR_QUOTATION_MARK, "");
+				String[] influencers = allInfluencers.split(REGEX_COMMA);
+
+				for (String influencerVariableName : influencers) {
+					influencerRelations
+							.add(new InfluencerRelation(context, targetVariableName, influencerVariableName));
+				}
+			}
+
 		}
+	}
+
+	private String getContext(String firstLine) {
+
+		Pattern pattern = Pattern.compile(REGEX_FIRST_LINE_CONTEXT);
+		Matcher matcher = pattern.matcher(firstLine);
+
+		return (matcher.matches() && matcher.group(CONTEXT_GROUP) != null) ? matcher.group(CONTEXT_GROUP) : "";
 	}
 }

@@ -9,7 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.kit.kastel.sdq.solidityroleadapter.items.IllegalModification;
+import edu.kit.kastel.sdq.solidityroleadapter.items.InfluencerRelation;
 import edu.kit.kastel.sdq.solidityroleadapter.parser.RoleAnnotationParser;
+import edu.kit.kastel.sdq.solidityroleadapter.parser.SlitherResultParser;
 import edu.kit.kastel.sdq.solidityroleadapter.parser.SolcVerifyResultParser;
 
 public class SolidityRoleAdapter {
@@ -25,20 +27,30 @@ public class SolidityRoleAdapter {
 		
 		RoleAnnotationParser roleAP = new RoleAnnotationParser();
 		SolcVerifyResultParser solcVRP = new SolcVerifyResultParser();
+		SlitherResultParser slitherRP = new SlitherResultParser();
 		
 		RoleAnnotations roleAnnotations = new RoleAnnotations();
 		List<IllegalModification> illegalModifications = new ArrayList<IllegalModification>();
+		List<InfluencerRelation> influencerRelations = new ArrayList<InfluencerRelation>();
 		
 		try {
 			if (PRINT_CONSOLE_INFO) printReadFilesInfo();
 			
 			roleAP.parse(URI_ROLE_ANNOTATIONS, roleAnnotations);
 			solcVRP.parse(URI_SOLC_VERIFY, illegalModifications);
+			slitherRP.parse(URI_SLITHER, influencerRelations);
 			
 			if (PRINT_CONSOLE_INFO) roleAnnotations.printDataInfo();
 			if (PRINT_CONSOLE_INFO) {
 				System.out.println("-----Parsed Illegal Modifications-----");
 				for(IllegalModification i : illegalModifications) {
+					System.out.println(i.toString());
+				}
+				System.out.println("");
+			}
+			if (PRINT_CONSOLE_INFO) {
+				System.out.println("-----Parsed Influencer Relations-----");
+				for(InfluencerRelation i : influencerRelations) {
 					System.out.println(i.toString());
 				}
 				System.out.println("");

@@ -5,8 +5,8 @@ public class InfluencerRelation {
 	private String targetVariableName;
 	private String influencerVariableName;
 
-	private Variable targetVariable = null;
-	private Variable influencerVariable = null;
+//	private Variable targetVariable = null;
+//	private Variable influencerVariable = null;
 
 	public InfluencerRelation(String context, String targetVariableName, String influencerVariableName) {
 		this.context = context;
@@ -15,6 +15,6 @@ public class InfluencerRelation {
 	}
 	
 	public String toString() {
-		return this.context + ": " + this.targetVariableName + "is influenced by '" + this.influencerVariableName + "'.";
+		return this.context + ": '" + this.targetVariableName + "' is influenced by '" + this.influencerVariableName + "'.";
 	}
 }
