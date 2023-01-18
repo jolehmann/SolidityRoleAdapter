@@ -18,4 +18,9 @@ public class Role {
 		final Role other = (Role) obj;
 		return this.name.equals(other.name);
 	}
+	
+	@Override
+	public int hashCode() {
+		return this.name.hashCode();
+	}
 }
