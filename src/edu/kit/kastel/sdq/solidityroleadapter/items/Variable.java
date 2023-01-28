@@ -1,29 +1,12 @@
 package edu.kit.kastel.sdq.solidityroleadapter.items;
 
-public class Variable {
-	String name;
-	SingleRoles modificationRoles;
-	SingleRoles influenceRoles;
+public class Variable extends RolesAnnotatedObject{
 	
-	public Variable (String name, SingleRoles modificationRoles, SingleRoles influenceRoles) {
-		this.name = name;
-		this.modificationRoles = modificationRoles;
-		this.influenceRoles = influenceRoles;
+	public Variable (String context, String name, TupleRoles roles) {
+		super(context, name, roles);
 	}
 	
-	public String getName() {
-		return this.name;
-	}
-	public SingleRoles getModRoles() {
-		return this.modificationRoles;
-	}
-	public SingleRoles getInflRoles() {
-		return this.influenceRoles;
-	}
 	public String toString() {
-		return this.name + " " + this.modificationRoles.toString() + " " + this.influenceRoles.toString();
-	}
-	public String toBracketNotation() {
-		return "(" + this.name + ", mod" + this.modificationRoles.toString() + ", infl" + this.influenceRoles.toString() + ")";
+		return super.toString() + " " + super.roles.toString();
 	}
 }

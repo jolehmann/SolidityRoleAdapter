@@ -12,6 +12,8 @@ import java.util.Set;
 import edu.kit.kastel.sdq.solidityroleadapter.items.IllegalModification;
 import edu.kit.kastel.sdq.solidityroleadapter.items.InfluenceDecoratedVariable;
 import edu.kit.kastel.sdq.solidityroleadapter.items.InfluencerRelation;
+import edu.kit.kastel.sdq.solidityroleadapter.operation.RoleAnnotations;
+import edu.kit.kastel.sdq.solidityroleadapter.operation.WorkingSet;
 import edu.kit.kastel.sdq.solidityroleadapter.parser.RoleAnnotationParser;
 import edu.kit.kastel.sdq.solidityroleadapter.parser.SlitherResultParser;
 import edu.kit.kastel.sdq.solidityroleadapter.parser.SolcVerifyResultParser;
@@ -34,13 +36,13 @@ public class SolidityRoleAdapter {
 
 		RoleAnnotations roleAnnotations = new RoleAnnotations();
 		List<IllegalModification> illegalModifications = new ArrayList<IllegalModification>();
-		List<InfluencerRelation> influencerRelations = new ArrayList<InfluencerRelation>();
+		WorkingSet varToVarRelations = new WorkingSet(new WorklistSolvingStrategy());
 
 		try {
 
 			roleAP.parse(URI_ROLE_ANNOTATIONS, roleAnnotations);
 			solcVRP.parse(URI_SOLC_VERIFY, illegalModifications);
-			slitherRP.parse(URI_SLITHER, influencerRelations);
+			slitherRP.parse(URI_SLITHER, roleAnnotations, varToVarRelations);
 
 		} catch (IOException e) {
 			e.printStackTrace();

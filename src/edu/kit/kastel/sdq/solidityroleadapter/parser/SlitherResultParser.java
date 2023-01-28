@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import edu.kit.kastel.sdq.solidityroleadapter.items.InfluencerRelation;
+import edu.kit.kastel.sdq.solidityroleadapter.operation.RoleAnnotations;
+import edu.kit.kastel.sdq.solidityroleadapter.operation.WorkingSet;
 
 public class SlitherResultParser {
 	private static final String REGEX_FIRST_LINE_CONTEXT = "Contract (?<context>.+)";
@@ -27,15 +28,17 @@ public class SlitherResultParser {
 	 *                            should be added
 	 * @throws IOException if the path is not accessible
 	 */
-	public void parse(final String uri, List<InfluencerRelation> influencerRelations) throws IOException {
-		this.parseLines(this.readLines(uri), influencerRelations);
+	public void parse(final String uri, RoleAnnotations roleAnnotations, WorkingSet varToVarRelations)
+			throws IOException {
+		this.parseLines(this.readLines(uri), roleAnnotations, varToVarRelations);
 	}
 
 	private List<String> readLines(final String uri) throws IOException {
 		return Files.readAllLines(Paths.get(uri));
 	}
 
-	private void parseLines(List<String> linesOfSolcVerifyResultFile, List<InfluencerRelation> influencerRelations) {
+	private void parseLines(List<String> linesOfSolcVerifyResultFile, RoleAnnotations roleAnnotations,
+			WorkingSet varToVarRelations) {
 
 		String context = this.getContext(linesOfSolcVerifyResultFile.get(0));
 
@@ -54,8 +57,9 @@ public class SlitherResultParser {
 				String[] influencers = allInfluencers.split(REGEX_COMMA);
 
 				for (String influencerVariableName : influencers) {
-					influencerRelations
-							.add(new InfluencerRelation(context, targetVariableName, influencerVariableName));
+
+					varToVarRelations.addRelation(roleAnnotations.get(context, influencerVariableName),
+							roleAnnotations.get(context, targetVariableName));
 				}
 			}
 

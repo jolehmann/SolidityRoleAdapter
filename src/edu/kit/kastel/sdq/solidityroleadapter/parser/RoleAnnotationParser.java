@@ -7,11 +7,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import edu.kit.kastel.sdq.solidityroleadapter.RoleAnnotations;
 import edu.kit.kastel.sdq.solidityroleadapter.items.Function;
 import edu.kit.kastel.sdq.solidityroleadapter.items.Role;
 import edu.kit.kastel.sdq.solidityroleadapter.items.SingleRoles;
+import edu.kit.kastel.sdq.solidityroleadapter.items.TupleRoles;
 import edu.kit.kastel.sdq.solidityroleadapter.items.Variable;
+import edu.kit.kastel.sdq.solidityroleadapter.operation.RoleAnnotations;
 
 public class RoleAnnotationParser {
 
@@ -23,9 +24,12 @@ public class RoleAnnotationParser {
 	}
 
 	/**
-	 * Reads the file with the provided uri and writes all found variables and functions with their roles into the RoleAnnotations object.
-	 * @param uri the path to the RoleAnnotations.txt file
-	 * @param roleAnnotations An RoleAnnotations object, to which the data should be added
+	 * Reads the file with the provided uri and writes all found variables and
+	 * functions with their roles into the RoleAnnotations object.
+	 * 
+	 * @param uri             the path to the RoleAnnotations.txt file
+	 * @param roleAnnotations An RoleAnnotations object, to which the data should be
+	 *                        added
 	 * @throws IOException if the path is not accessible
 	 */
 	public void parse(final String uri, RoleAnnotations roleAnnotations) throws IOException {
@@ -44,12 +48,14 @@ public class RoleAnnotationParser {
 
 			if (matcher.matches()) {
 				if (matcher.group(SECOND_ROLES_GROUP) == null) {
-					roleAnnotations.addFunction(matcher.group(CONTEXT_GROUP),
-							new Function(matcher.group(NAME_GROUP), parseRoles(matcher.group(FIRST_ROLES_GROUP))));
+					// Function
+					SingleRoles roles = parseRoles(matcher.group(FIRST_ROLES_GROUP));
+					roleAnnotations.add(new Function(matcher.group(CONTEXT_GROUP), matcher.group(NAME_GROUP), roles));
 				} else {
-					roleAnnotations.addVariable(matcher.group(CONTEXT_GROUP),
-							new Variable(matcher.group(NAME_GROUP), parseRoles(matcher.group(FIRST_ROLES_GROUP)),
-									parseRoles(matcher.group(SECOND_ROLES_GROUP))));
+					// Variable
+					TupleRoles roles = new TupleRoles(parseRoles(matcher.group(FIRST_ROLES_GROUP)),
+							parseRoles(matcher.group(SECOND_ROLES_GROUP)));
+					roleAnnotations.add(new Variable(matcher.group(CONTEXT_GROUP), matcher.group(NAME_GROUP), roles));
 				}
 			}
 		}
