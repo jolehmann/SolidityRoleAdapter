@@ -2,10 +2,10 @@ package edu.kit.kastel.sdq.solidityroleadapter.items;
 
 public class Variable {
 	String name;
-	Roles modificationRoles;
-	Roles influenceRoles;
+	SingleRoles modificationRoles;
+	SingleRoles influenceRoles;
 	
-	public Variable (String name, Roles modificationRoles, Roles influenceRoles) {
+	public Variable (String name, SingleRoles modificationRoles, SingleRoles influenceRoles) {
 		this.name = name;
 		this.modificationRoles = modificationRoles;
 		this.influenceRoles = influenceRoles;
@@ -14,10 +14,10 @@ public class Variable {
 	public String getName() {
 		return this.name;
 	}
-	public Roles getModRoles() {
+	public SingleRoles getModRoles() {
 		return this.modificationRoles;
 	}
-	public Roles getInflRoles() {
+	public SingleRoles getInflRoles() {
 		return this.influenceRoles;
 	}
 	public String toString() {

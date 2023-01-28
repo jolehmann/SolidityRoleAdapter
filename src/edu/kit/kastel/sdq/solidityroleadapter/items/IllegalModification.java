@@ -26,8 +26,8 @@ public class IllegalModification {
 		this.function = roleAnnotations.getFunction(this.context, this.functionName);
 		this.variable = roleAnnotations.getVariable(this.context, this.variableName);
 		if (this.function != null && this.variable != null) {
-			Roles newModRoles = this.variable.getModRoles().copyAndAdd(this.function.getRoles());
-			Roles newInflRoles = this.variable.getInflRoles().copyAndAdd(this.function.getRoles());
+			SingleRoles newModRoles = this.variable.getModRoles().copyAndAdd(this.function.getRoles());
+			SingleRoles newInflRoles = this.variable.getInflRoles().copyAndAdd(this.function.getRoles());
 			this.variableWithCorrectedRoles = new Variable(this.variable.getName(), newModRoles, newInflRoles);
 		}
 	}

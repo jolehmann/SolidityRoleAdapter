@@ -1,75 +1,26 @@
 package edu.kit.kastel.sdq.solidityroleadapter.items;
 
-import java.util.HashSet;
 import java.util.Set;
 
-public class Roles {
+public interface Roles {
 
-	Set<Role> roles;
+	//public Roles add(Role role);
 	
-	public Roles () {
-		this.roles = new HashSet<Role>();
-	}
+	//public Roles add(Set<Role> roles);
 	
-	public Roles add(Role role) {
-		roles.add(role);
-		return this;
-	}
+	public Roles add(Roles otherRoles);
 	
-	public Roles add(Set<Role> roles) {
-		this.roles.addAll(roles);
-		return this;
-	}
+	public Set<Role> toSet();
 	
-	/**
-	 * Returns a Set of all contained Role objects.
-	 * @return
-	 */
-	public Set<Role> toSet() {
-		Set<Role> rolesCopy = new HashSet<Role>();
-		rolesCopy.addAll(this.roles);
-		return rolesCopy;
-	}
+	public Roles copy();
 	
-	public Roles copy() {
-		Roles copy = new Roles();
-		copy.add(this.toSet());
-		return copy;
-	}
+	public Roles copyAndAdd(Roles otherRoles);
 	
-	/**
-	 * Returns a new Roles object with the union of both roles
-	 * @param otherRoles
-	 * @return
-	 */
-	public Roles copyAndAdd(Roles otherRoles) {
-		Roles copy = this.copy();
-		copy.add(otherRoles.toSet());
-		return copy;
-	}
+	public boolean contains(Role role);
 	
-	public boolean contains(Role role) {
-		return this.roles.contains(role);
-	}
+	public boolean contains(Roles otherRoles);
 	
-	public boolean isSubsetOf(Roles otherRoles) {
-		for (Role r : this.roles) {
-			if (!otherRoles.contains(r)) {
-				return false;
-			}
-		}
-		return true;
-	}
+	public boolean equals(Object obj);
 	
-	public boolean equals(Roles otherRoles) {
-		return this.isSubsetOf(otherRoles) && otherRoles.isSubsetOf(this);
-	}
-	
-	public String toString() {
-		String output = "{";
-		for (Role role : roles) {
-			output = output + role.toString() + ", ";
-		}
-		return roles.isEmpty()? "{}" : output.substring(0, output.length() - 2) + "}";
-	}
+	public String toString();
 }

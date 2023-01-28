@@ -32,11 +32,11 @@ public class InfluenceDecoratedVariable extends Variable {
 		return this.influencedVariables;
 	}
 
-	public Roles getPostProcessedModRoles() {
+	public SingleRoles getPostProcessedModRoles() {
 		return this.modificationRoles;
 	}
 
-	public Roles getPostProcessedInflRoles() {
+	public SingleRoles getPostProcessedInflRoles() {
 		return this.influenceRoles;
 	}
 
@@ -49,11 +49,11 @@ public class InfluenceDecoratedVariable extends Variable {
 		return this.decoratedVariable.getName();
 	}
 
-	public Roles getModRoles() {
+	public SingleRoles getModRoles() {
 		return this.decoratedVariable.getModRoles();
 	}
 
-	public Roles getInflRoles() {
+	public SingleRoles getInflRoles() {
 		return this.decoratedVariable.getInflRoles();
 	}
 

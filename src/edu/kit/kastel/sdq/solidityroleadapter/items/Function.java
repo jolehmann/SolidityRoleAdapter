@@ -2,9 +2,9 @@ package edu.kit.kastel.sdq.solidityroleadapter.items;
 
 public class Function {
 	String name;
-	Roles roles;
+	SingleRoles roles;
 
-	public Function(String name, Roles roles) {
+	public Function(String name, SingleRoles roles) {
 		this.name = name;
 		this.roles = roles;
 	}
@@ -12,7 +12,7 @@ public class Function {
 	public String getName() {
 		return this.name;
 	}
-	public Roles getRoles() {
+	public SingleRoles getRoles() {
 		return this.roles;
 	}
 	public String toString() {

@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 import edu.kit.kastel.sdq.solidityroleadapter.RoleAnnotations;
 import edu.kit.kastel.sdq.solidityroleadapter.items.Function;
 import edu.kit.kastel.sdq.solidityroleadapter.items.Role;
-import edu.kit.kastel.sdq.solidityroleadapter.items.Roles;
+import edu.kit.kastel.sdq.solidityroleadapter.items.SingleRoles;
 import edu.kit.kastel.sdq.solidityroleadapter.items.Variable;
 
 public class RoleAnnotationParser {
@@ -55,8 +55,8 @@ public class RoleAnnotationParser {
 		}
 	}
 
-	private Roles parseRoles(String rolesInBrackets) {
-		Roles roles = new Roles();
+	private SingleRoles parseRoles(String rolesInBrackets) {
+		SingleRoles roles = new SingleRoles();
 		for (String name : rolesInBrackets.split(", ")) {
 			if (name != "") {
 				roles.add(new Role(name));

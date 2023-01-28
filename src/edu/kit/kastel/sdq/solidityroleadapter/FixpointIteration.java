@@ -9,7 +9,7 @@ import java.util.Set;
 
 import edu.kit.kastel.sdq.solidityroleadapter.items.InfluenceDecoratedVariable;
 import edu.kit.kastel.sdq.solidityroleadapter.items.InfluencerRelation;
-import edu.kit.kastel.sdq.solidityroleadapter.items.Roles;
+import edu.kit.kastel.sdq.solidityroleadapter.items.SingleRoles;
 import edu.kit.kastel.sdq.solidityroleadapter.items.Variable;
 
 public class FixpointIteration {
@@ -36,12 +36,12 @@ public class FixpointIteration {
 			InfluenceDecoratedVariable variable = i.next();
 			i.remove();
 
-			Roles ownInflRoles = variable.getPostProcessedInflRoles();
-			Roles ownModRoles = variable.getPostProcessedModRoles();
+			SingleRoles ownInflRoles = variable.getPostProcessedInflRoles();
+			SingleRoles ownModRoles = variable.getPostProcessedModRoles();
 
 			for (InfluenceDecoratedVariable target : variable.getInfluencedVariables()) {
-				Roles targetInflRoles = target.getPostProcessedInflRoles();
-				Roles targetModRoles = target.getPostProcessedModRoles();
+				SingleRoles targetInflRoles = target.getPostProcessedInflRoles();
+				SingleRoles targetModRoles = target.getPostProcessedModRoles();
 
 				if (!ownInflRoles.isSubsetOf(targetInflRoles)) {
 					targetInflRoles.add(ownInflRoles.toSet());
