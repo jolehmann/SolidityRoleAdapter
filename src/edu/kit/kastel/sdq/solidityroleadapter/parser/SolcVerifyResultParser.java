@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import edu.kit.kastel.sdq.solidityroleadapter.items.IllegalModification;
+import edu.kit.kastel.sdq.solidityroleadapter.operation.RoleAnnotations;
+import edu.kit.kastel.sdq.solidityroleadapter.operation.WorkingSet;
 
 public class SolcVerifyResultParser {
 
@@ -20,20 +21,25 @@ public class SolcVerifyResultParser {
 	}
 
 	/**
-	 * Reads the file with the provided uri and adds all found illegalModifications into the IllegalModification List.
-	 * @param uri the path to the RoleAnnotations.txt file
-	 * @param illegalModifications An IllegalModification List, to which the data should be added
+	 * Reads the file with the provided uri and adds all found illegalModifications
+	 * into the IllegalModification List.
+	 * 
+	 * @param uri                  the path to the RoleAnnotations.txt file
+	 * @param illegalModifications An IllegalModification List, to which the data
+	 *                             should be added
 	 * @throws IOException if the path is not accessible
 	 */
-	public void parse(final String uri, List<IllegalModification> illegalModifications) throws IOException {
-		this.parseLines(this.readLines(uri), illegalModifications);
+	public void parse(final String uri, RoleAnnotations roleAnnotations, WorkingSet funcToVarRelationsSolc)
+			throws IOException {
+		this.parseLines(this.readLines(uri), roleAnnotations, funcToVarRelationsSolc);
 	}
 
 	private List<String> readLines(final String uri) throws IOException {
 		return Files.readAllLines(Paths.get(uri));
 	}
 
-	private void parseLines(List<String> linesOfSolcVerifyResultFile, List<IllegalModification> illegalModifications) {
+	private void parseLines(List<String> linesOfSolcVerifyResultFile, RoleAnnotations roleAnnotations,
+			WorkingSet funcToVarRelationsSolc) {
 
 		for (int i = 0; i < linesOfSolcVerifyResultFile.size(); i++) {
 			Pattern pattern = Pattern.compile(REGEX_ERROR_FOUND);
@@ -51,7 +57,8 @@ public class SolcVerifyResultParser {
 						break;
 					}
 					String variableName = modIllegallyMatcher.group(NAME_GROUP);
-					illegalModifications.add(new IllegalModification(context, functionName, variableName));
+					funcToVarRelationsSolc.addRelation(roleAnnotations.get(context, functionName),
+							roleAnnotations.get(context, variableName));
 				}
 			}
 		}

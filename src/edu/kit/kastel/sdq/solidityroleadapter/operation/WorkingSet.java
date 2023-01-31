@@ -19,10 +19,16 @@ import edu.kit.kastel.sdq.solidityroleadapter.items.RolesAnnotatedObject;
  */
 public class WorkingSet {
 	
-	HashMap<String, HashMap<String, RelationDecoratedObject>> workingObjects;
-	
-	public WorkingSet() {
+	private HashMap<String, HashMap<String, RelationDecoratedObject>> workingObjects;
+	private SolvingStrategy solvingStrategy;
+
+	public WorkingSet(SolvingStrategy solvingStrategy) {
 		this.workingObjects = new HashMap<String, HashMap<String, RelationDecoratedObject>>();
+		this.solvingStrategy = solvingStrategy;
+	}
+	
+	public SolvingStrategy getSolvingStrategy() {
+		return this.solvingStrategy;
 	}
 	
 	public void addRelation(RolesAnnotatedObject origin, RolesAnnotatedObject target) {
@@ -47,7 +53,7 @@ public class WorkingSet {
 	}
 	
 	public WorkingSet mergeWith(WorkingSet other) {
-		return new WorkingSet();
+		return new WorkingSet(this.solvingStrategy.mergeWith(other.getSolvingStrategy()));
 	}
 	
 	public WorkingSet solve() {
@@ -55,7 +61,7 @@ public class WorkingSet {
 	}
 	
 	public WorkingSet copy() {
-		return new WorkingSet();
+		return new WorkingSet(this.solvingStrategy);
 	}
 	
 	public WorkingSet reset() {

@@ -28,9 +28,9 @@ public class SlitherResultParser {
 	 *                            should be added
 	 * @throws IOException if the path is not accessible
 	 */
-	public void parse(final String uri, RoleAnnotations roleAnnotations, WorkingSet varToVarRelations)
+	public void parse(final String uri, RoleAnnotations roleAnnotations, WorkingSet varToVarRelationsSlither)
 			throws IOException {
-		this.parseLines(this.readLines(uri), roleAnnotations, varToVarRelations);
+		this.parseLines(this.readLines(uri), roleAnnotations, varToVarRelationsSlither);
 	}
 
 	private List<String> readLines(final String uri) throws IOException {
@@ -38,7 +38,7 @@ public class SlitherResultParser {
 	}
 
 	private void parseLines(List<String> linesOfSolcVerifyResultFile, RoleAnnotations roleAnnotations,
-			WorkingSet varToVarRelations) {
+			WorkingSet varToVarRelationsSlither) {
 
 		String context = this.getContext(linesOfSolcVerifyResultFile.get(0));
 
@@ -58,7 +58,7 @@ public class SlitherResultParser {
 
 				for (String influencerVariableName : influencers) {
 
-					varToVarRelations.addRelation(roleAnnotations.get(context, influencerVariableName),
+					varToVarRelationsSlither.addRelation(roleAnnotations.get(context, influencerVariableName),
 							roleAnnotations.get(context, targetVariableName));
 				}
 			}

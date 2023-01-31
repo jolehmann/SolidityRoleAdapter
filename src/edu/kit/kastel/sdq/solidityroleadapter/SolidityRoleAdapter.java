@@ -7,13 +7,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-import edu.kit.kastel.sdq.solidityroleadapter.items.IllegalModification;
-import edu.kit.kastel.sdq.solidityroleadapter.items.InfluenceDecoratedVariable;
-import edu.kit.kastel.sdq.solidityroleadapter.items.InfluencerRelation;
 import edu.kit.kastel.sdq.solidityroleadapter.operation.RoleAnnotations;
+import edu.kit.kastel.sdq.solidityroleadapter.operation.UniDirectionalSolvingStrategy;
 import edu.kit.kastel.sdq.solidityroleadapter.operation.WorkingSet;
+import edu.kit.kastel.sdq.solidityroleadapter.operation.WorklistSolvingStrategy;
 import edu.kit.kastel.sdq.solidityroleadapter.parser.RoleAnnotationParser;
 import edu.kit.kastel.sdq.solidityroleadapter.parser.SlitherResultParser;
 import edu.kit.kastel.sdq.solidityroleadapter.parser.SolcVerifyResultParser;
@@ -35,49 +33,43 @@ public class SolidityRoleAdapter {
 		SlitherResultParser slitherRP = new SlitherResultParser();
 
 		RoleAnnotations roleAnnotations = new RoleAnnotations();
-		List<IllegalModification> illegalModifications = new ArrayList<IllegalModification>();
-		WorkingSet varToVarRelations = new WorkingSet(new WorklistSolvingStrategy());
+		
+		WorkingSet funcToVarRelationsSolc = new WorkingSet(new UniDirectionalSolvingStrategy());
+		WorkingSet varToVarRelationsSlither = new WorkingSet(new WorklistSolvingStrategy());
 
 		try {
 
 			roleAP.parse(URI_ROLE_ANNOTATIONS, roleAnnotations);
-			solcVRP.parse(URI_SOLC_VERIFY, illegalModifications);
-			slitherRP.parse(URI_SLITHER, roleAnnotations, varToVarRelations);
+			solcVRP.parse(URI_SOLC_VERIFY, roleAnnotations, funcToVarRelationsSolc);
+			slitherRP.parse(URI_SLITHER, roleAnnotations, varToVarRelationsSlither);
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		// Annotate all roles to the parsed data
-		for (IllegalModification i : illegalModifications) {
-			i.annotateWith(roleAnnotations);
-		}
-		for (InfluencerRelation i : influencerRelations) {
-			i.annotateWith(roleAnnotations);
-		}
-
-		// Process Fixpoint Iteration of Slither Results
-		FixpointIteration fixPI = new FixpointIteration(influencerRelations);
-		fixPI.run();
-		Set<InfluenceDecoratedVariable> variablesWithChangedRoles = fixPI.getVariablesWithChangedRoles();
+		// Run solvers/ Composition types and get items with changed roles
+		// Set<InfluenceDecoratedVariable> variablesWithChangedRoles =
+		// fixPI.getVariablesWithChangedRoles();
 
 		// Create result
 		List<String> linesOfResult = new ArrayList<String>();
-		for (IllegalModification i : illegalModifications) {
-			linesOfResult.add(i.toBracketNotation());
-		}
+//		for (IllegalModification i : illegalModifications) {
+//			linesOfResult.add(i.toBracketNotation());
+//		}
 
 		try {
 
 			writeBackToResultFile(linesOfResult);
+			// --> stattdessen JSON output
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 		if (PRINT_CONSOLE_INFO)
-			consoleInfoPrinter.print(illegalModifications, roleAnnotations, influencerRelations,
-					variablesWithChangedRoles, linesOfResult);
+			;
+		// consoleInfoPrinter.print(illegalModifications, roleAnnotations,
+		// influencerRelations,variablesWithChangedRoles, linesOfResult);
 	}
 
 	static void writeBackToResultFile(List<String> linesOfSolcVerifyResult) throws IOException {
