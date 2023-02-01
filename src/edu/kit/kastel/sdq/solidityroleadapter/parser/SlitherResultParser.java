@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import edu.kit.kastel.sdq.solidityroleadapter.items.RolesAnnotatedObject;
 import edu.kit.kastel.sdq.solidityroleadapter.operation.RoleAnnotations;
 import edu.kit.kastel.sdq.solidityroleadapter.operation.WorkingSet;
 
@@ -58,8 +59,11 @@ public class SlitherResultParser {
 
 				for (String influencerVariableName : influencers) {
 
-					varToVarRelationsSlither.addRelation(roleAnnotations.get(context, influencerVariableName),
-							roleAnnotations.get(context, targetVariableName));
+					RolesAnnotatedObject influencerVariable = roleAnnotations.get(context, influencerVariableName);
+					RolesAnnotatedObject targetVariable = roleAnnotations.get(context, targetVariableName);
+					if (influencerVariable != null && targetVariable != null) {
+						varToVarRelationsSlither.addRelation(influencerVariable, targetVariable);
+					}
 				}
 			}
 

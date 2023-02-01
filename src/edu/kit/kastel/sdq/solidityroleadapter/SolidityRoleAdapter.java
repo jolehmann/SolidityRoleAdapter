@@ -1,10 +1,6 @@
 package edu.kit.kastel.sdq.solidityroleadapter;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +8,11 @@ import edu.kit.kastel.sdq.solidityroleadapter.operation.RoleAnnotations;
 import edu.kit.kastel.sdq.solidityroleadapter.operation.UniDirectionalSolvingStrategy;
 import edu.kit.kastel.sdq.solidityroleadapter.operation.WorkingSet;
 import edu.kit.kastel.sdq.solidityroleadapter.operation.WorklistSolvingStrategy;
+import edu.kit.kastel.sdq.solidityroleadapter.operation.composition.SolvingAfterRelationMerging;
+import edu.kit.kastel.sdq.solidityroleadapter.operation.composition.SolvingComposition;
+import edu.kit.kastel.sdq.solidityroleadapter.output.AffectedObjectSetDTO;
+import edu.kit.kastel.sdq.solidityroleadapter.output.ConsoleInfoPrinter;
+import edu.kit.kastel.sdq.solidityroleadapter.output.ResultWriter;
 import edu.kit.kastel.sdq.solidityroleadapter.parser.RoleAnnotationParser;
 import edu.kit.kastel.sdq.solidityroleadapter.parser.SlitherResultParser;
 import edu.kit.kastel.sdq.solidityroleadapter.parser.SolcVerifyResultParser;
@@ -21,62 +22,63 @@ public class SolidityRoleAdapter {
 	public static final String URI_SLITHER = "data/SlitherResults - Market.txt";
 	public static final String URI_ROLE_ANNOTATIONS = "data/RoleAnnotations.txt";
 
-	public static final String URI_NEW_VERSION_OF_RESULT_FILE = "data/SolidityRoleAdapter - Results.txt";
+	public static final String URI_OF_RESULT_TXT_FILE = "data/SolidityRoleAdapter - Results.txt";
+	public static final String URI_OF_RESULT_JSON_FILE = "data/SolidityRoleAdapter - Results.json";
 
 	private static final ConsoleInfoPrinter consoleInfoPrinter = new ConsoleInfoPrinter();
 	private static final boolean PRINT_CONSOLE_INFO = true;
 
+	static RoleAnnotationParser roleAP = new RoleAnnotationParser();
+	static SolcVerifyResultParser solcVRP = new SolcVerifyResultParser();
+	static SlitherResultParser slitherRP = new SlitherResultParser();
+	
+	static ResultWriter resultWriter = new ResultWriter();
+	
 	public static void main(String[] args) {
 
-		RoleAnnotationParser roleAP = new RoleAnnotationParser();
-		SolcVerifyResultParser solcVRP = new SolcVerifyResultParser();
-		SlitherResultParser slitherRP = new SlitherResultParser();
+		// Setup
 
 		RoleAnnotations roleAnnotations = new RoleAnnotations();
-		
 		WorkingSet funcToVarRelationsSolc = new WorkingSet(new UniDirectionalSolvingStrategy());
 		WorkingSet varToVarRelationsSlither = new WorkingSet(new WorklistSolvingStrategy());
 
-		try {
+		// Parsing
 
+		try {
 			roleAP.parse(URI_ROLE_ANNOTATIONS, roleAnnotations);
 			solcVRP.parse(URI_SOLC_VERIFY, roleAnnotations, funcToVarRelationsSolc);
 			slitherRP.parse(URI_SLITHER, roleAnnotations, varToVarRelationsSlither);
-
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		// Run solvers/ Composition types and get items with changed roles
-		// Set<InfluenceDecoratedVariable> variablesWithChangedRoles =
-		// fixPI.getVariablesWithChangedRoles();
+		// Processing
 
-		// Create result
+		SolvingComposition solvingARM = new SolvingAfterRelationMerging();
+		WorkingSet result = solvingARM.compose(List.of(funcToVarRelationsSolc, varToVarRelationsSlither));
+
+		// Create result for txt
+
 		List<String> linesOfResult = new ArrayList<String>();
-//		for (IllegalModification i : illegalModifications) {
-//			linesOfResult.add(i.toBracketNotation());
-//		}
+		result.getAllWorkingObjectsWithChangedRoles().forEach(item -> linesOfResult.add(item.toString()));
+
+		// Create result for json
+
+		AffectedObjectSetDTO resultDTOForJson = new AffectedObjectSetDTO();
+		result.getAllWorkingObjectsWithChangedRoles().forEach(item -> resultDTOForJson.add(item.getDTO(null)));
+
+		// Write to txt file and to json file
 
 		try {
-
-			writeBackToResultFile(linesOfResult);
-			// --> stattdessen JSON output
-
+			resultWriter.writeToResultTxtFile(URI_OF_RESULT_TXT_FILE, linesOfResult);
+			resultWriter.writeToResultJsonFile(URI_OF_RESULT_JSON_FILE, resultDTOForJson);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
+		// Print Log
+
 		if (PRINT_CONSOLE_INFO)
-			;
-		// consoleInfoPrinter.print(illegalModifications, roleAnnotations,
-		// influencerRelations,variablesWithChangedRoles, linesOfResult);
-	}
-
-	static void writeBackToResultFile(List<String> linesOfSolcVerifyResult) throws IOException {
-		BufferedWriter writer = Files.newBufferedWriter(Paths.get(URI_NEW_VERSION_OF_RESULT_FILE),
-				Charset.forName("UTF-8"));
-		writer.write(String.join(System.lineSeparator(), linesOfSolcVerifyResult));
-		writer.close();
-
+			consoleInfoPrinter.print(roleAnnotations, result, linesOfResult);
 	}
 }

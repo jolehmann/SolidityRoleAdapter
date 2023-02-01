@@ -2,7 +2,7 @@ package edu.kit.kastel.sdq.solidityroleadapter.operation;
 
 import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.List;
 
 import edu.kit.kastel.sdq.solidityroleadapter.items.RelationDecoratedObject;
 import edu.kit.kastel.sdq.solidityroleadapter.items.Roles;
@@ -10,7 +10,7 @@ import edu.kit.kastel.sdq.solidityroleadapter.items.Roles;
 public class WorklistSolvingStrategy implements SolvingStrategy {
 
 	@Override
-	public void solve(Set<RelationDecoratedObject> workingObjects) {
+	public void solve(List<RelationDecoratedObject> workingObjects) {
 
 		LinkedHashSet<RelationDecoratedObject> queue = new LinkedHashSet<RelationDecoratedObject>();
 		queue.addAll(workingObjects);

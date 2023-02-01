@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import edu.kit.kastel.sdq.solidityroleadapter.items.RolesAnnotatedObject;
 import edu.kit.kastel.sdq.solidityroleadapter.operation.RoleAnnotations;
 import edu.kit.kastel.sdq.solidityroleadapter.operation.WorkingSet;
 
@@ -57,8 +58,12 @@ public class SolcVerifyResultParser {
 						break;
 					}
 					String variableName = modIllegallyMatcher.group(NAME_GROUP);
-					funcToVarRelationsSolc.addRelation(roleAnnotations.get(context, functionName),
-							roleAnnotations.get(context, variableName));
+					
+					RolesAnnotatedObject func = roleAnnotations.get(context, functionName);
+					RolesAnnotatedObject var = roleAnnotations.get(context, variableName);
+					if (func != null && var != null) {
+						funcToVarRelationsSolc.addRelation(func, var);
+					}
 				}
 			}
 		}

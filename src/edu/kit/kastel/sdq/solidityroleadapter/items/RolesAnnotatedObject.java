@@ -1,5 +1,7 @@
 package edu.kit.kastel.sdq.solidityroleadapter.items;
 
+import edu.kit.kastel.sdq.solidityroleadapter.output.RolesAnnotatedDTO;
+
 public abstract class RolesAnnotatedObject {
 
 	String context;
@@ -27,4 +29,15 @@ public abstract class RolesAnnotatedObject {
 	public String toString() {
 		return this.context + "::" + this.name;
 	}
+	
+	public String getContextAndName() {
+		return this.context + "::" + this.name;
+	}
+	
+	/**
+	 * Returns a DataTransferObject for JSON, consisting of the set of missing roles compared to the correctedRoles (specified by the parameter).
+	 * @param correctedRoles the new roles-set to compare to
+	 * @return A specific RolesAnnotatedDTO that should be selected by the subclasses
+	 */
+	public abstract RolesAnnotatedDTO getDTO(Roles correctedRoles);
 }

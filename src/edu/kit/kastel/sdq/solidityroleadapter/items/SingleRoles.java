@@ -1,6 +1,8 @@
 package edu.kit.kastel.sdq.solidityroleadapter.items;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class SingleRoles implements Roles{
@@ -79,5 +81,15 @@ public class SingleRoles implements Roles{
 			output = output + role.toString() + ", ";
 		}
 		return roles.isEmpty()? "{}" : output.substring(0, output.length() - 2) + "}";
+	}
+	
+	public List<String> getMinus(SingleRoles otherRoles) {
+		List<String> result = new ArrayList<String>();
+		for (Role role : roles) {
+			if(!otherRoles.contains(role)) {
+				result.add(role.toString());
+			}
+		}
+		return result;
 	}
 }

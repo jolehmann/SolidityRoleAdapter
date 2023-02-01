@@ -1,5 +1,6 @@
 package edu.kit.kastel.sdq.solidityroleadapter.items;
 
+import java.util.List;
 import java.util.Set;
 
 public class TupleRoles implements Roles {
@@ -91,5 +92,13 @@ public class TupleRoles implements Roles {
 	
 	public String toString() {
 		return this.modificationRoles.toString() + " " + this.influenceRoles.toString();
+	}
+	
+	public List<String> getModRolesMinus(TupleRoles otherRoles) {
+		return this.getModificationRoles().getMinus(otherRoles.getModificationRoles());
+	}
+	
+	public List<String> getInflRolesMinus(TupleRoles otherRoles) {
+		return this.getInfluenceRoles().getMinus(otherRoles.getInfluenceRoles());
 	}
 }
