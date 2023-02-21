@@ -33,5 +33,6 @@ public class ConsoleInfoPrinter {
 		// terminated Info
 		System.out.println("The program was terminated after execution.");
 		System.out.println("Results were written to: " + SolidityRoleAdapter.URI_OF_RESULT_TXT_FILE);
+		System.out.println("JSON result is written to: " + SolidityRoleAdapter.URI_OF_RESULT_JSON_FILE);
 	}
 }
